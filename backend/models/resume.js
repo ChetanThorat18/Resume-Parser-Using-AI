@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const ResumeSchema = new mongoose.Schema(
   {
     jobDescription: {
-      type: String,
+      type: String, // Updated to store URL of the uploaded job description PDF
       required: true,
     },
     filename: {
@@ -15,7 +15,7 @@ const ResumeSchema = new mongoose.Schema(
       required: true,
     },
     url: {
-      type: String, // Cloudinary URL or local path
+      type: String, // Cloudinary URL 
       required: true,
     },
     public_id: {

@@ -3,7 +3,7 @@ const router = express.Router();
 const { uploadFiles } = require("../controllers/upload");
 const upload = require("../multer"); // Multer middleware
 
-// route for uploading resumes
-router.post("/upload", upload.array("resumes", 20), uploadFiles);
+// route for uploading resumes and job description
+router.post("/upload", upload.fields([{ name: "resumes", maxCount: 20 }, { name: "jobDescription", maxCount: 1 }]), uploadFiles);
 
 module.exports = router;
