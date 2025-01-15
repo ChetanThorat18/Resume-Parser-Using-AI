@@ -30,5 +30,10 @@ backend/build/
 frontend/postcss.config.js
 frontend/tailwind.config.js
 
+# Python files
 Resume_Parser/bin
 Resume_Parser/lib
+
+# Application log
+app.log
+Resume_Parser/app.log

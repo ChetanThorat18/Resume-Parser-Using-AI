@@ -3,42 +3,68 @@ from calculate_score import calculate_matching_scores
 from processor import process_all_pdfs, extract_resume_info
 from flask_cors import CORS
 import os
-from init import download_resumes_and_jd 
+from init import download_resumes_and_jd
+import warnings
+import logging
 
+# Suppress warnings
+warnings.filterwarnings("ignore")
+
+# Initialize Flask app
 app = Flask(__name__)
-CORS(app)  # This will allow all domains. 
+CORS(app)  # Enable CORS for all domains
+
+# Configure logging
+LOG_FILE = "app.log"
+logging.basicConfig(
+    filename=LOG_FILE,  # Log file name
+    level=logging.INFO,  # Log INFO level and above
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+
+# Logging example: logging.info("Message")
+logging.info("Application started.")
 
 @app.route('/calculate-matching-scores', methods=['POST'])
 def calculate_matching_scores_api():
+    """
+    Endpoint to calculate matching scores between resumes and job description.
+    """
     try:
+        # Start process and log
+        logging.info("Downloading resumes and job description.")
         download_resumes_and_jd()
 
-        # Explicitly set input_folder to 'input'
+        # Define input folder and API URL
         input_folder = 'input'
-        
-        # Define the api_url for the request
         api_url = "http://localhost:3000/resumes"
 
-        # Ensure the input folder exists
+        # Ensure input folder exists
         if not os.path.exists(input_folder):
-            raise FileNotFoundError(f"Input folder '{input_folder}' does not exist")
+            error_msg = f"Input folder '{input_folder}' does not exist."
+            logging.error(error_msg)
+            raise FileNotFoundError(error_msg)
 
         # Process resumes and job description
-        job_description_doc, resumes = process_all_pdfs(input_folder, api_url)  # api_url passed here
+        logging.info("Processing resumes and job description.")
+        job_description_doc, resumes = process_all_pdfs(input_folder, api_url)
         job_description = extract_resume_info(job_description_doc)
 
         # Calculate matching scores
+        logging.info("Calculating matching scores.")
         scores = calculate_matching_scores(job_description, resumes)
 
-        # Log and return the calculated scores
-        print("Calculated scores:", scores)
+        # Log calculated scores and return response
+        logging.info(f"Matching scores calculated successfully: {scores}")
         return jsonify(scores), 200
 
     except Exception as e:
-        # Log and handle errors
-        print(f"Error occurred: {str(e)}")
+        # Log error details
+        logging.error(f"An error occurred: {str(e)}", exc_info=True)
         return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    # Starting the server
+    logging.info("Starting Flask server on port 5001.")
+    app.run(host="0.0.0.0", port=5001, debug=False)
