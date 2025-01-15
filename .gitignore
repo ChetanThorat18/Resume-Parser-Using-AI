@@ -29,3 +29,6 @@ backend/build/
 # Tailwind-generated files
 frontend/postcss.config.js
 frontend/tailwind.config.js
+
+Resume_Parser/bin
+Resume_Parser/lib

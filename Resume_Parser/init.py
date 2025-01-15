@@ -35,7 +35,11 @@ def download_resumes_and_jd():
     resumes_data = response.json()
 
     # Download the job description once, and keep the same file for all resumes
-    job_description_url = resumes_data[0]['jobDescription']
+    if not resumes_data:
+        print("No resumes found in the database.")
+        job_description_url = None
+    else:
+        job_description_url = resumes_data[0]['jobDescription']
     job_description_filename = f"job_description.pdf"
     
     # Download job description

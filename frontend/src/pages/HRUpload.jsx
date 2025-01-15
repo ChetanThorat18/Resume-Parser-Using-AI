@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import SortedResumes from "./SortedResumes";
+
 
 const HRUpload = () => {
   const [jobDescription, setJobDescription] = useState(null);
   const [resumes, setResumes] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [showSortedResumes, setShowSortedResumes] = useState(false);
 
   const handleJobDescriptionUpload = (event) => {
     setJobDescription(event.target.files[0]);
@@ -30,11 +33,16 @@ const HRUpload = () => {
       });
       alert("Files uploaded successfully!");
       setUploadedFiles(response.data);
+      setShowSortedResumes(true); // Show SortedResumesPage after successful submission
     } catch (error) {
       alert("Error uploading files");
       console.error(error);
     }
   };
+
+  if (showSortedResumes) {
+    return <SortedResumes />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex justify-center items-center py-12">
